@@ -1,0 +1,6 @@
+- name: Full VPS provisioning
+  import_playbook: vps-base.yml
+
+- import_playbook: vps-firewall.yml
+
+- import_playbook: vps-wireguard.yml

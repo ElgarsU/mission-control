@@ -1,0 +1,17 @@
+vps_public_ip: 89.167.98.246
+
+wg_subnet: 10.0.0.0/24
+wg_port: 51820
+
+vps_wg_ip: 10.0.0.1
+macbook_wg_ip: 10.0.0.2
+phone_wg_ip: 10.0.0.3  # reserved
+
+vps_wg_public_key: "x2JlesZ/QZ8EutYxxeb+yKO+6bMN8DmCF1OzDqRBigs="
+macbook_wg_public_key: "i91HZ1Ll1s0MMRjF/WExup6uPJcm/DuO7BWDKlNYPBc="
+
+ufw_allowed_ports:
+  - 22/tcp
+  - 51820/udp
+  - 80/tcp
+  - 443/tcp

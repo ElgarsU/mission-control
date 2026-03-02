@@ -1,0 +1,4 @@
+.DS_Store
+
+# Ansible vault (encrypted secrets)
+infra/ansible/group_vars/vault.yml

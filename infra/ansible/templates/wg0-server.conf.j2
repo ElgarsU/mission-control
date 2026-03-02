@@ -1,0 +1,10 @@
+# VPS WireGuard config — managed by Ansible
+[Interface]
+Address = {{ vps_wg_ip }}/24
+ListenPort = {{ wg_port }}
+PrivateKey = {{ vps_wg_private_key }}
+
+[Peer]
+# MacBook
+PublicKey = {{ macbook_wg_public_key }}
+AllowedIPs = {{ macbook_wg_ip }}/32

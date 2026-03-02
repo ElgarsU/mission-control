@@ -1,0 +1,26 @@
+- name: WireGuard on VPS
+  hosts: vps
+  tasks:
+    - name: Install wireguard
+      apt:
+        name: wireguard
+        state: present
+
+    - name: Template WireGuard server config
+      template:
+        src: ../templates/wg0-server.conf.j2
+        dest: /etc/wireguard/wg0.conf
+        mode: "0600"
+      notify: Restart WireGuard
+
+    - name: Enable and start WireGuard
+      systemd:
+        name: wg-quick@wg0
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Restart WireGuard
+      systemd:
+        name: wg-quick@wg0
+        state: restarted

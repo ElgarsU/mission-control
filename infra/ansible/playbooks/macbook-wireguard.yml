@@ -1,0 +1,21 @@
+- name: Configure WireGuard on MacBook
+  hosts: macbook
+  become: true
+  tasks:
+    - name: Ensure wireguard-tools installed (Homebrew)
+      community.general.homebrew:
+        name: wireguard-tools
+        state: present
+      become: false
+
+    - name: Ensure /etc/wireguard/ exists
+      file:
+        path: /etc/wireguard
+        state: directory
+        mode: "0700"
+
+    - name: Template WireGuard client config
+      template:
+        src: ../templates/wg0-client.conf.j2
+        dest: /etc/wireguard/wg0.conf
+        mode: "0600"
