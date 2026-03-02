@@ -425,7 +425,7 @@ mission-control/
 │   ├── launchd/             # launchd plist for MacBook agent
 │   └── ssh/                 # SSH configs
 └── scripts/                 # Helper scripts
-    └── mc                   # CLI wrapper (calls mc-agent)
+    └── ...                  #
 ```
 
 ---
