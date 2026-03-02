@@ -1,9 +1,9 @@
-# VPS Provisioning Plan
+# Infrastructure Provisioning Plan
 
-> **Superseded by Ansible playbooks** — see `infra/ansible/`. This file kept as reference.
+> **Project uses Ansible playbooks** — see `infra/ansible/`.
 
 ## Context
-First step of Mission Control implementation (Phase 1 from arch.md). Provision the Hetzner VPS so it's ready for WireGuard and mc-relay.
+First step of Mission Control implementation (Phase 1 from PLAN-project.md). Provision the Hetzner VPS so it's ready for WireGuard and mc-relay.
 
 ---
 
@@ -19,7 +19,7 @@ First step of Mission Control implementation (Phase 1 from arch.md). Provision t
 - **IP:** 89.167.98.246
 
 ### 2. DNS (Cloudflare)
-- Add `A` record: `vps.elgars.eu` -> `89.167.98.246` (gray cloud / DNS only)
+- Add `A` record: `vps.[...].eu` -> `89.167.98.246` (gray cloud / DNS only)
 
 ### 3. SSH Config (MacBook)
 Add to `~/.ssh/config`:
@@ -64,4 +64,4 @@ Host mc-vps
 - [ ] `ping 10.0.0.2` from VPS over WireGuard works
 - [ ] UFW is active: only ports 22, 51820/udp, 80, 443 open
 - [ ] Docker runs: `docker run hello-world`
-- [ ] DNS resolves: `vps.elgars.dev` -> 89.167.98.246
+- [ ] DNS resolves: `vps.[...].dev` -> 89.167.98.246

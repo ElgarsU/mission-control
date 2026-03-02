@@ -9,7 +9,7 @@ Personal infrastructure project: VPS + WireGuard VPN + relay server for managing
 ## Infrastructure
 - **VPS:** Hetzner CX22, Ubuntu 24.04, IP `89.167.98.246`
 - **SSH:** `ssh mc-vps` (root user, key auth only)
-- **Domain:** `elgars.eu` (DNS not yet configured)
+- **Domain:** `[...].eu` (DNS not yet configured)
 - **WireGuard subnet:** `10.0.0.0/24` (VPS=.1, MacBook=.2, Phone=.3)
 
 ## Conventions

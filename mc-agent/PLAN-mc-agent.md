@@ -1,6 +1,6 @@
 # mc-agent — Implementation Plan
 
-> Local daemon for Mission Control. Manages Claude Code tmux sessions, connects to relay, exposes menu bar + TUI.
+> Local daemon for Mission Control. Manages Coding Agent tmux sessions, connects to relay, exposes menu bar + TUI.
 
 ## Build Phases
 
@@ -18,7 +18,7 @@
 - Security boundary enforcement: reject terminal session commands from WebSocket
 
 ### Phase 3: Monitoring
-- **Monitor package** (`internal/monitor/`): poll `tmux capture-pane`, detect "waiting" patterns
+- **Monitor package** (`internal/monitor/`): poll `tmux capture-pane`, detect "waiting" patterns (Claude Code should have some hooks, review documentation)
 - `session.output` streaming to relay (batched)
 - `session.attention` alerts (question, approval, error detection)
 - Output mode support (quiet/full/summary) per session
@@ -43,7 +43,7 @@
 | `cmd/mc-agent/` | CLI entry point (Cobra). Subcommand routing only — no business logic. |
 | `internal/daemon/` | Core daemon loop. Session registry, command dispatch, lifecycle management. |
 | `internal/tmux/` | Thin wrapper over tmux CLI. Create, list, kill, capture-pane, send-keys. |
-| `internal/monitor/` | Polls tmux output, detects Claude "waiting" patterns, emits events. |
+| `internal/monitor/` | Polls tmux output, detects Coding Agent "waiting" patterns, emits events. |
 | `internal/ws/` | WebSocket client. Connect to relay, marshal/unmarshal protocol messages. |
 | `internal/ipc/` | Unix socket server (daemon side) + client (TUI/CLI side). Local command transport. |
 | `internal/tui/` | Bubble Tea TUI. Connects to daemon via IPC. |
@@ -71,12 +71,12 @@ JSON-based request/response protocol matching the relay message types.
 Unix socket chosen over TCP because: no port conflicts, automatic file-permission-based access control, no network exposure.
 
 ### Security boundary enforcement
-The daemon is the enforcement point — not the relay. Commands arriving over WebSocket (relay) are restricted to Claude Code session operations only. 
+The daemon is the enforcement point — not the relay. Commands arriving over WebSocket (relay) are restricted to Coding Agent session operations only. 
 Terminal sessions (`term-*`) can only be created via local IPC. The daemon validates command origin (local vs relay) before executing.
 
 ### Agent-as-observer
 tmux sessions are independent of the agent. If the agent crashes or restarts, sessions keep running. 
-On restart, the agent discovers existing `cc-*` sessions and resumes monitoring. This means no critical state is lost on agent failure.
+On restart, the agent discovers existing `ca-*` sessions and resumes monitoring. This means no critical state is lost on agent failure.
 
 ## What's Deferred
 
