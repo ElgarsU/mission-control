@@ -54,7 +54,8 @@ func TestCreate_withCommand(t *testing.T) {
 	defer cleanupSessions(t, mgr)
 
 	name := testPrefix + "cmd-1"
-	err := mgr.Create(name, "echo hello")
+	// Use a long-running command so the session stays alive for assertions
+	err := mgr.Create(name, "sleep 60")
 	if err != nil {
 		t.Fatalf("Create(%q, cmd): %v", name, err)
 	}
@@ -135,10 +136,14 @@ func TestCapture_containsCommandOutput(t *testing.T) {
 	defer cleanupSessions(t, mgr)
 
 	name := testPrefix + "capture-1"
-	// Start a session that echoes a known string
-	err := mgr.Create(name, "echo CAPTURE_TEST_MARKER")
+	err := mgr.Create(name, "")
 	if err != nil {
 		t.Fatalf("Create: %v", err)
+	}
+
+	// Inject a command and capture its output
+	if err := mgr.SendKeys(name, "echo CAPTURE_TEST_MARKER"); err != nil {
+		t.Fatalf("SendKeys: %v", err)
 	}
 
 	output, err := mgr.Capture(name)
