@@ -18,7 +18,7 @@
 - Security boundary enforcement: reject terminal session commands from WebSocket
 
 ### Phase 3: Monitoring
-- **Monitor package** (`internal/monitor/`): poll `tmux capture-pane`, detect "waiting" patterns (Claude Code should have some hooks, review documentation)
+- **Monitor package** (`internal/monitor/`): poll `tmux capture-pane`, detect "waiting" patterns (Coding Agent should have some hooks, review documentation)
 - `session.output` streaming to relay (batched)
 - `session.attention` alerts (question, approval, error detection)
 - Output mode support (quiet/full/summary) per session

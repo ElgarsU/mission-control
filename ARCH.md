@@ -77,7 +77,7 @@ It exposes a unix socket for local commands.
 **Responsibilities:**
 - Manage tmux sessions (create, list, attach, kill)
 - Launch Coding Agent instances inside tmux sessions
-- Start plain terminal sessions (tmux sessions without Claude, for file browsing etc.)
+- Start plain terminal sessions (tmux sessions without Coding Agent, for file browsing etc.)
 - Monitor Coding Agent output for "waiting for input" patterns (question marks, prompts, tool approval requests)
 - Forward Coding Agent output/state to VPS relay
 - Receive and inject input from VPS relay into the correct tmux session
@@ -132,7 +132,7 @@ Launching the TUI starts the daemon if it's not already running and displays a m
 ```
 === Mission Control ===
 1 - Active sessions:
-  1) ca-mission-control-a1b2    [Claude waiting]
+  1) ca-mission-control-a1b2    [Coding Agent waiting]
   2) ca-api-server-c3d4         [Running]
   3) term-mission-control-a4f4  [Terminal]
  Actions (shown when selecting individual active session):
@@ -199,10 +199,10 @@ Terminal sessions (`term-*`) are plain tmux shells, not exposed to Discord. Only
 
 The relay/agent protocol is deliberately restricted:
 - `session.created` input from **mc-agent** that new session is created and new channel needs to be created.
-- `session.create` can ONLY start a Claude Code process inside a tmux session. There is no message type or command to start a raw shell/terminal.
-- `session.input` delivers text exclusively to a Claude Code session's stdin. The agent must validate the target session is a Claude Code session before injecting input.
+- `session.create` can ONLY start a Coding Agent process inside a tmux session. There is no message type or command to start a raw shell/terminal.
+- `session.input` delivers text exclusively to a Coding Agent session's stdin. The agent must validate the target session is a Coding Agent session before injecting input.
 - `session.output` receives output from Coding Agent session (streaming via WebSocket)
-- `session.kill` can only terminate existing Claude Code sessions.
+- `session.kill` can only terminate existing Coding Agent sessions.
 - There is no `exec`, `shell`, or `run` command in the protocol. The agent must reject any unrecognized message types.
 
 ```
@@ -231,7 +231,7 @@ Terminal sessions (`term-*`) are plain tmux shells, not exposed to Discord. Only
 
 ### Starting from Laptop
 
-1. User clicks "+ New Claude Session" in menu bar (or runs `mc-agent tui` in terminal)
+1. User clicks "+ New Coding Agent Session" in menu bar (or runs `mc-agent tui` in terminal)
 2. Daemon creates tmux session `ca-mission-control-a1b2`, launches Coding Agent
 3. Daemon sends `session.created` to relay
 4. Relay/bot creates Discord channel `#ca-mission-control-a1b2`
@@ -241,21 +241,21 @@ Terminal sessions (`term-*`) are plain tmux shells, not exposed to Discord. Only
 
 1. User types `/cc start mission-control --mode full` in Discord
 2. Bot sends `session.create` to daemon via relay
-3. Daemon creates tmux session + Claude Code
+3. Daemon creates tmux session + Coding Agent
 4. Bot creates channel, streaming begins
 
 ### Starting from TUI (Phone via SSH)
 
 1. User SSHs to MacBook (via VPS jump), `mc-agent tui` launches automatically
-2. User selects "New Claude Code session" or "New terminal session"
+2. User selects "New Coding Agent session" or "New terminal session"
 3. TUI sends command to daemon via unix socket
-4. Daemon creates tmux session (Claude or plain shell)
+4. Daemon creates tmux session (Coding Agent or plain shell)
 5. TUI attaches to the new session
-6. If Claude session: daemon notifies relay, Discord channel created
+6. If Coding Agent session: daemon notifies relay, Discord channel created
 
 ### Coding Agent Needs Attention
 
-1. Agent detects Claude waiting (output pattern matching on `tmux capture-pane`)
+1. Agent detects Coding Agent waiting (output pattern matching on `tmux capture-pane`)
 2. Sends `session.attention` to relay
 3. Bot posts alert + @user ping in channel
 4. User replies in Discord
@@ -263,7 +263,7 @@ Terminal sessions (`term-*`) are plain tmux shells, not exposed to Discord. Only
 
 ### Closing a Session
 
-1. Claude exits naturally OR user runs `/cc stop`
+1. Coding Agent exits naturally OR user runs `/cc stop`
 2. Agent cleans up tmux session (auto-close), sends `session.closed`
 3. Bot renames channel to `closed-ca-...` and locks it (moved to Closed Sessions category)
 
@@ -287,7 +287,7 @@ My Dev Server
 
 | Command | Description |
 |---------|-------------|
-| `/cc start <project> [--dir path] [--mode quiet\|full] [--prompt "..."]` | Start new Claude Code session |
+| `/cc start <project> [--dir path] [--mode quiet\|full] [--prompt "..."]` | Start new Coding Agent session |
 | `/cc stop <session>` | Kill a session |
 | `/cc list` | List active sessions |
 | `/cc mode <quiet\|full\|summary>` | Switch output mode in current channel |
@@ -296,15 +296,15 @@ My Dev Server
 
 ### Output Formatting — Hybrid Approach
 
-**Cleaned markdown** for regular Claude output:
+**Cleaned markdown** for regular Coding Agent output:
 
 ```
-🤖 Claude:
+🤖 Coding Agent:
 I'll fix the authentication bug in `src/auth.ts`. Let me read the file first.
 
 📄 Reading src/auth.ts...
 
-🤖 Claude:
+🤖 Coding Agent:
 Found the issue - the token expiry check is using `<` instead of `<=`.
 I'll update line 42.
 ```
@@ -312,7 +312,7 @@ I'll update line 42.
 **Structured embeds** for attention alerts, tool approvals, and errors:
 
 ```
-┌─── 🤖 Claude Response ─── (blue sidebar)
+┌─── 🤖 Coding Agent Response ─── (blue sidebar)
 │ I'll fix the authentication bug in src/auth.ts.
 │ Let me read the file first.
 └────────────────────────────
@@ -334,12 +334,12 @@ Embeds have a 4096 char limit per embed (vs 2000 for regular messages), and on m
 ### Input Mode — Toggle
 
 `/cc input on|off` per channel:
-- **ON:** Messages go to Claude as input
+- **ON:** Messages go to Coding Agent as input
 - **OFF:** Messages are just notes/discussion (not forwarded)
 
 ### Session Close Behavior — Auto-close
 
-When Claude exits, the tmux session is killed. The Discord channel gets renamed to `closed-ca-...` and locked (moved to Closed Sessions category). 
+When Coding Agent exits, the tmux session is killed. The Discord channel gets renamed to `closed-ca-...` and locked (moved to Closed Sessions category). 
 Channels are NOT deleted — they are kept but marked closed.
 
 ### Channel Output Modes
@@ -348,8 +348,8 @@ Each Discord channel has a configurable output mode, toggled via `/cc mode <mode
 
 | Mode | Behavior | Use Case |
 |------|----------|----------|
-| `quiet` | Only posts when Claude needs attention (questions, approvals, errors, task completion) | Fire-and-forget tasks |
-| `full` | Streams all Claude output (batched every 2-3s, edits last message until pause, then posts new) | Active monitoring |
+| `quiet` | Only posts when Coding Agent needs attention (questions, approvals, errors, task completion) | Fire-and-forget tasks |
+| `full` | Streams all Coding Agent output (batched every 2-3s, edits last message until pause, then posts new) | Active monitoring |
 | `summary` | Posts periodic AI-summarized progress + attention alerts | Long-running tasks |
 
 Default mode is configurable per-session at creation: `/cc start myproject --mode quiet`

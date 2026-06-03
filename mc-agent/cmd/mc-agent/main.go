@@ -15,10 +15,10 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "mc-agent",
-	Short: "Mission Control agent — manages Claude Code sessions on this machine",
+	Short: "Mission Control agent — manages Coding Agent sessions on this machine",
 	Long: `mc-agent is the local daemon for Mission Control.
 
-It manages tmux sessions running Claude Code, connects to the relay server
+It manages tmux sessions running Coding Agent, connects to the relay server
 on the VPS via WebSocket, and exposes local frontends (menu bar, TUI).
 
 Run 'mc-agent start' to launch the daemon.

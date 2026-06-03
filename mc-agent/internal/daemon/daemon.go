@@ -27,7 +27,7 @@ type ManagedSession struct {
 	CreatedAt time.Time
 }
 
-// Session is a tracked Claude Code session in the daemon's registry.
+// Session is a tracked Coding Agent session in the daemon's registry.
 type Session struct {
 	ID        string
 	Project   string
@@ -49,7 +49,7 @@ func New(mgr SessionManager) *Daemon {
 	}
 }
 
-// CreateSession creates a new Claude Code tmux session for the given project.
+// CreateSession creates a new Coding Agent tmux session for the given project.
 func (d *Daemon) CreateSession(project string) (*Session, error) {
 	id := shortID()
 	name := sessionPrefix + project + "-" + id

@@ -1,6 +1,6 @@
 # Mission Control
 
-A system for managing Claude Code sessions locally (via menu bar app) or remotely via Discord, with option to SSH to development machine for terminal access.
+A system for managing Coding Agent sessions locally (via menu bar app) or remotely via Discord, with option to SSH to development machine for terminal access.
 
 See [ARCH.md](ARCH.md) for the high-level architecture overview.
 

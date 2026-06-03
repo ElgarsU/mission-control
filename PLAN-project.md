@@ -51,7 +51,7 @@ mission-control/
 - Message bridging (Discord ↔ tmux)
 
 ### Phase 3: Monitoring
-- Output pattern detection for Claude "waiting" states
+- Output pattern detection for Coding Agent "waiting" states
 - Attention alerts with @user pings
 - Channel output modes (quiet/full/summary)
 
@@ -74,8 +74,8 @@ Gotchas and constraints to keep in mind during development.
 
 The daemon accepts commands from two transports: unix socket (local) and WebSocket (relay). Commands must be filtered based on origin:
 
-- **Unix socket (trusted):** All commands allowed — Claude sessions, terminal sessions, kill, list, attach.
-- **WebSocket (untrusted):** Claude session commands only — `session.create`, `session.input`, `session.kill`, `session.list_req`, `session.mode`. 
+- **Unix socket (trusted):** All commands allowed — Coding Agent sessions, terminal sessions, kill, list, attach.
+- **WebSocket (untrusted):** Coding Agent session commands only — `session.create`, `session.input`, `session.kill`, `session.list_req`, `session.mode`. 
 
 Reject anything else. Never allow terminal session creation or arbitrary exec over WebSocket.
 This is the enforcement point for the security boundary. Do not rely on the relay to self-restrict — the daemon must enforce it.
@@ -88,7 +88,7 @@ This is the enforcement point for the security boundary. Do not rely on the rela
 
 ## Open Questions
 
-1. **Output pattern detection:** How does Claude Code signal it's waiting? Critical for `quiet` mode. 
+1. **Output pattern detection:** How does Coding Agent signal it's waiting? Critical for `quiet` mode. 
 2. **Discord rate limits:** 5 messages per 5 seconds per channel. `full` mode needs smart batching (edit-in-place, then new message on pause).
 3. **Reconnection:** What happens when MacBook goes to sleep or WireGuard disconnects? Agent should auto-reconnect. Relay should show sessions as "disconnected" in Discord.
 4. **Multiple initial prompts:** Should `/cc start` support piping in a multi-line prompt from Discord?
