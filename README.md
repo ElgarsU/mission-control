@@ -4,6 +4,14 @@ A system for managing Coding Agent sessions locally (via menu bar app) or remote
 
 See [ARCH.md](ARCH.md) for the high-level architecture overview.
 
+> **Deployment note.** The other personal apps on the shared VPS deploy from the
+> central **infra** repo (`git@github.com:ElgarsU/infra.git`). Mission Control is
+> not wired into infra yet — it's pre-MVP (mc-agent runs on the MacBook via
+> launchd; the VPS-side `mc-relay` isn't built). When `mc-relay` ships it'll get
+> an `apps/mission-control/` entry there. The Ansible below (base + WireGuard) is
+> kept here for now. **Ansible Vault has been removed** — secrets are plaintext
+> gitignored files (see Secrets, below).
+
 ## Infrastructure
 
 - **VPS:** Hetzner CX22, Ubuntu 24.04, Helsinki — `89.167.98.246`
@@ -18,10 +26,8 @@ Provisioning is managed with Ansible playbooks in `infra/ansible/`.
 
 - [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/) installed
 - SSH access to VPS configured (`ssh mc-vps`)
-- `group_vars/vault.yml` populated with WireGuard private keys and encrypted:
-  ```
-  ansible-vault encrypt infra/ansible/group_vars/vault.yml
-  ```
+- `group_vars/secrets.yml` populated with the WireGuard private keys
+  (copy `group_vars/secrets.yml.example`). Plaintext, gitignored — no vault.
 
 ### Playbooks
 
@@ -42,17 +48,16 @@ Run from `infra/ansible/`:
 cd infra/ansible
 
 # VPS
-ansible-playbook playbooks/vps-provision.yml --ask-vault-pass
+ansible-playbook playbooks/vps-provision.yml
 
 # MacBook only
-ansible-playbook playbooks/macbook-provision.yml --ask-vault-pass
+ansible-playbook playbooks/macbook-provision.yml
 ```
 
-### Vault
+### Secrets
 
-Secrets (WireGuard private keys) are stored in `group_vars/vault.yml`, encrypted with `ansible-vault`. This file is gitignored.
-
-```sh
-# Edit secrets
-ansible-vault edit infra/ansible/group_vars/vault.yml
-```
+The WireGuard private keys live in `group_vars/secrets.yml` — **plaintext,
+gitignored** (no Ansible Vault). Copy `group_vars/secrets.yml.example` to
+`group_vars/secrets.yml` and fill in the keys. This matches the simple-tools
+secrets convention used by the infra repo: real values stay on the laptop, never
+committed. (Vault was removed 2026-06-03 to avoid carrying it to a new laptop.)

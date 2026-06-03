@@ -1,4 +1,4 @@
 .DS_Store
 
-# Ansible vault (encrypted secrets)
-infra/ansible/group_vars/vault.yml
+# Plaintext secrets (WireGuard private keys) — gitignored, no vault
+infra/ansible/group_vars/secrets.yml
